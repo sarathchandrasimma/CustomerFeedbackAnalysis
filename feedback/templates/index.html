@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Feedback Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.0/dist/tailwind.min.css" />
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+        }
+        .navbar {
+            background-color: #282c34;
+            color: #ffffff;
+        }
+        .navbar a {
+            color: #ffffff;
+        }
+        .navbar a:hover {
+            color: #61dafb;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .heading {
+            color: #282c34;
+        }
+        .section {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+            animation: fadeIn 0.5s ease-in;
+        }
+        .section img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .button-submit {
+            background-color: #61dafb;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button-submit:hover {
+            background-color: #21a1f1;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="navbar py-4">
+        <div class="container flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold">Feedback Analyzer</a>
+            <nav>
+                <a href="#" class="px-4">Home</a>
+                <a href="#" class="px-4">About</a>
+                <a href="#" class="px-4">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container mt-6">
+        <h1 class="text-3xl heading font-bold mb-6">Customer Feedback Analysis</h1>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="section mb-6">
+                <label class="block text-lg font-medium mb-2">Upload CSV File:</label>
+                <input type="file" name="file" accept=".csv" class="border border-gray-300 rounded-md py-2 px-4 w-full">
+            </div>
+            <button type="submit" class="button-submit">Analyze Feedback</button>
+        </form>
+
+        {% if error %}
+        <div class="section mt-6">
+            <p class="text-red-600">{{ error }}</p>
+        </div>
+        {% endif %}
+
+        {% if data_summary %}
+        <div class="section mt-6">
+            <h2 class="text-2xl font-semibold mb-4">Data Summary</h2>
+            <p>Number of Rows: {{ data_summary.num_rows }}</p>
+            <p>Number of Columns: {{ data_summary.num_columns }}</p>
+            <p>Columns: {{ data_summary.columns|join:", " }}</p>
+        </div>
+        {% endif %}
+
+        {% if sentiment_percentages %}
+        <div class="section mt-6">
+            <h2 class="text-2xl font-semibold mb-4">Sentiment Percentages</h2>
+            <ul>
+                {% for sentiment, percentage in sentiment_percentages.items %}
+                <li>{{ sentiment }}: {{ percentage }}%</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if chart_html_histogram %}
+        <div class="section mt-6">
+            <h2 class="text-2xl font-semibold mb-4">Plotly Charts</h2>
+            <div class="plotly-charts">
+                <div class="mb-4">
+                    <h3 class="text-xl font-semibold">Sentiment Histogram</h3>
+                    {{ chart_html_histogram|safe }}
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold">Sentiment Pie Chart</h3>
+                    {{ chart_html_pie|safe }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if seaborn_chart_bar %}
+        <div class="section mt-6">
+            <h2 class="text-2xl font-semibold mb-4">Seaborn Charts</h2>
+            <div class="seaborn-charts">
+                <div class="mb-4">
+                    <h3 class="text-xl font-semibold">Sentiment Bar Chart</h3>
+                    <img src="data:image/png;base64,{{ seaborn_chart_bar }}" alt="Seaborn Bar Chart">
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold">Sentiment Pie Chart</h3>
+                    <img src="data:image/png;base64,{{ seaborn_chart_pie }}" alt="Seaborn Pie Chart">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if wordcloud %}
+        <div class="section mt-6">
+            <h2 class="text-2xl font-semibold mb-4">Word Cloud</h2>
+            <img src="data:image/png;base64,{{ wordcloud }}" alt="Word Cloud">
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
