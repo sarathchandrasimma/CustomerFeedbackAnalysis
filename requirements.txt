@@ -1,0 +1,8 @@
+Django
+Pandas
+Plotly
+Seaborn
+WordCloud
+SpaCy
+TextBlob
+Tweepy
