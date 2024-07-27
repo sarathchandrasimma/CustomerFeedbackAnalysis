@@ -4,12 +4,13 @@ import pandas as pd
 import spacy
 from wordcloud import WordCloud
 import plotly.express as px
-import seaborn as sns
+import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
-import matplotlib.pyplot as plt
 from textblob import TextBlob
 from collections import Counter
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
 
 # Load SpaCy model
 nlp = spacy.load('en_core_web_sm')
@@ -41,46 +42,27 @@ def wordcloud_to_base64(wordcloud):
     img_str = base64.b64encode(buffer.getvalue()).decode('utf-8')
     return img_str
 
-# Generate Plotly chart
-def generate_plotly_chart(data, chart_type='histogram'):
-    df = pd.DataFrame(data, columns=['sentiment', 'count'])
-    
-    if chart_type == 'histogram':
-        fig = px.histogram(df, x='sentiment', title='Sentiment Histogram')
-    elif chart_type == 'pie':
-        fig = px.pie(df, names='sentiment', values='count', title='Sentiment Distribution')
-    
+# Generate Plotly 3D pie chart
+def generate_plotly_pie_chart(data):
+    df = pd.DataFrame(data)
+    fig = px.pie(df, names='sentiment', values='count', title='Sentiment Distribution', hole=0.3)
+    fig.update_traces(textinfo='percent+label')
+    fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
     return fig.to_html(full_html=False)
 
-# Generate Seaborn chart
-def generate_seaborn_chart(data, chart_type='bar'):
+# Generate Plotly bar chart
+def generate_plotly_bar_chart(data):
     df = pd.DataFrame(data)
-    
-    plt.figure(figsize=(10, 6))
-    
-    if chart_type == 'bar':
-        sns.barplot(x='sentiment', y='count', data=df, palette='viridis')
-        plt.title('Sentiment Count')
-        plt.xlabel('Sentiment')
-        plt.ylabel('Count')
-    elif chart_type == 'pie':
-        df.set_index('sentiment', inplace=True)
-        df['count'].plot(kind='pie', autopct='%1.1f%%', figsize=(8, 8), colors=sns.color_palette('viridis', n_colors=len(df)))
-        plt.title('Sentiment Distribution')
-    
-    plt.tight_layout()
-    buffer = BytesIO()
-    plt.savefig(buffer, format='png')
-    plt.close()
-    img_str = base64.b64encode(buffer.getvalue()).decode('utf-8')
-    return img_str
+    fig = px.bar(df, x='sentiment', y='count', color='sentiment', title='Sentiment Bar Chart', text='count')
+    fig.update_layout(xaxis_title='Sentiment', yaxis_title='Count', xaxis=dict(tickangle=-45))
+    fig.update_traces(texttemplate='%{text}', textposition='outside')
+    return fig.to_html(full_html=False)
 
 # Clean and preprocess feedback data
 def clean_feedback(feedback_list):
     cleaned_feedback = []
     for feedback in feedback_list:
         if pd.notnull(feedback):
-            # Remove non-alphanumeric characters, except for spaces
             cleaned_feedback.append(' '.join(word for word in feedback.split() if word.isalnum() or word.isspace()))
     return cleaned_feedback
 
@@ -99,6 +81,23 @@ def analyze_feedback(feedback_list):
     sentiment_percentages = {sentiment: (count / sentiment_total) * 100 for sentiment, count in sentiment_counts.items()}
 
     return sentiments, sentiment_counts, sentiment_percentages
+
+# Identify common issues and areas for improvement
+def identify_common_issues(feedback_list):
+    # Vectorize feedback and apply LDA
+    vectorizer = CountVectorizer(stop_words='english')
+    X = vectorizer.fit_transform(feedback_list)
+    lda = LatentDirichletAllocation(n_components=5, random_state=0)
+    lda.fit(X)
+
+    # Get top words for each topic
+    feature_names = vectorizer.get_feature_names_out()
+    topics = []
+    for topic_idx, topic in enumerate(lda.components_):
+        top_words = [feature_names[i] for i in topic.argsort()[-10:]]
+        topics.append({'topic': f'Topic {topic_idx + 1}', 'words': ', '.join(top_words)})
+
+    return topics
 
 # Django view
 def index(request):
@@ -128,14 +127,15 @@ def index(request):
                     # Analyze feedback
                     sentiments, sentiment_counts, sentiment_percentages = analyze_feedback(feedback_list)
                     
+                    # Identify common issues
+                    topics = identify_common_issues(feedback_list)
+                    
                     # Convert sentiment_counts to list of dicts for chart generation
                     sentiment_data = [{'sentiment': s, 'count': count} for s, count in sentiment_counts.items()]
                     
                     # Generate charts
-                    chart_html_histogram = generate_plotly_chart(sentiment_data, 'histogram')
-                    chart_html_pie = generate_plotly_chart(sentiment_data, 'pie')
-                    seaborn_chart_bar = generate_seaborn_chart(sentiment_data, 'bar')
-                    seaborn_chart_pie = generate_seaborn_chart(sentiment_data, 'pie')
+                    chart_html_pie = generate_plotly_pie_chart(sentiment_data)
+                    chart_html_bar = generate_plotly_bar_chart(sentiment_data)
                     
                     # Generate word cloud for entire feedback
                     feedback_text = ' '.join(feedback_list)
@@ -153,11 +153,10 @@ def index(request):
                         'form': form,
                         'data_summary': data_summary,
                         'sentiment_percentages': sentiment_percentages,
-                        'chart_html_histogram': chart_html_histogram,
                         'chart_html_pie': chart_html_pie,
-                        'seaborn_chart_bar': seaborn_chart_bar,
-                        'seaborn_chart_pie': seaborn_chart_pie,
+                        'chart_html_bar': chart_html_bar,
                         'wordcloud': wordcloud_base64,
+                        'topics': topics,
                     }
                     return render(request, 'index.html', context)
 
