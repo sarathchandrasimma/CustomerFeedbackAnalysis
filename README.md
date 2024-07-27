@@ -119,7 +119,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contact
 
 - **Email:** sarathchandrarocking@gmail.com, padavikram14012003@gmail.com
-- **GitHub:** [yourusername](https://github.com/sarathchandrasimma)
+- **GitHub:** [sarathchandrasimma](https://github.com/sarathchandrasimma)
 
 ```
 
