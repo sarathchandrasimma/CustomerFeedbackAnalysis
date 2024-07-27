@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | Customer Feedback Analysis Tool</title>
+    <link href="{% static 'css/tailwind.css' %}" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-100">
+    <nav class="bg-blue-500 p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <a href="{% url 'home' %}" class="text-white text-2xl font-bold"
+          >Home</a
+        >
+        <div>
+          <a href="{% url 'about' %}" class="text-white px-4">About</a>
+          <a href="{% url 'contact' %}" class="text-white px-4">Contact</a>
+          <a href="{% url 'index' %}" class="text-white px-4"
+            >Feedback Analysis</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mx-auto p-4">
+      <h1 class="text-4xl font-bold text-center mb-8">
+        Welcome to the Customer Feedback Analysis Tool
+      </h1>
+      <p class="text-xl text-center mb-4">
+        Our tool helps retailers understand customer feedback and improve their
+        products and services effectively.
+      </p>
+      <p class="text-lg text-center">
+        Navigate through the About and Contact tabs to learn more and get in
+        touch with us.
+      </p>
+    </div>
+  </body>
+</html>
