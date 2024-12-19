@@ -3,52 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About | Customer Feedback Analysis Tool</title>
-    <link href="{% static 'css/tailwind.css' %}" rel="stylesheet" />
+    <title>About Us - Feedback Analyzer</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
   </head>
-  <body class="bg-gray-100">
-    <nav class="bg-blue-500 p-4">
-      <div class="container mx-auto flex justify-between items-center">
-        <a href="{% url 'home' %}" class="text-white text-2xl font-bold"
-          >Home</a
-        >
-        <div>
-          <a href="{% url 'about' %}" class="text-white px-4">About</a>
-          <a href="{% url 'contact' %}" class="text-white px-4">Contact</a>
-          <a href="{% url 'index' %}" class="text-white px-4"
-            >Feedback Analysis</a
-          >
-        </div>
+  <body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <header class="bg-gray-900 text-white">
+      <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold">About Us</h1>
       </div>
-    </nav>
-
-    <div class="container mx-auto p-4">
-      <h1 class="text-4xl font-bold text-center mb-8">
-        About the Customer Feedback Analysis Tool
-      </h1>
-      <p class="text-lg mb-4">
-        Our Customer Feedback Analysis Tool is designed to help retailers
-        understand their customers' sentiments and identify common issues and
-        areas for improvement. By analyzing feedback from various sources such
-        as reviews, social media, and surveys, our tool provides valuable
-        insights that can enhance product and service quality.
-      </p>
-      <h2 class="text-2xl font-bold mb-4">How to Use the Tool</h2>
-      <ol class="list-decimal list-inside">
-        <li>Navigate to the Feedback Analysis tab.</li>
-        <li>
-          Upload a CSV file containing customer feedback with columns such as
-          "feedback", "review", or "text".
-        </li>
-        <li>
-          Click the "Analyze" button to generate sentiment analysis, word
-          clouds, and other visual insights.
-        </li>
-        <li>
-          Review the generated insights and recommendations to help improve your
-          products and services.
-        </li>
-      </ol>
-    </div>
+    </header>
+    <main class="container mx-auto p-4">
+      <div class="bg-white p-8 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-4">Welcome to Feedback Analyzer</h2>
+        <p class="mb-4">
+          Our tool is designed to help you understand customer feedback by
+          analyzing reviews, social media comments, and survey responses.
+        </p>
+        <p class="mb-4">
+          We use advanced Natural Language Processing (NLP) techniques to
+          provide insights on common issues and areas for improvement, helping
+          retailers enhance their products and services.
+        </p>
+        <p class="mb-4">
+          Our features include sentiment analysis, word cloud generation, and
+          topic modeling to give you a comprehensive view of customer feedback.
+        </p>
+        <p class="mb-4">Thank you for using our tool!</p>
+      </div>
+    </main>
+    <footer class="bg-gray-900 text-white text-center p-4 mt-4">
+      <p>&copy; 2024 Feedback Analyzer. All rights reserved.</p>
+    </footer>
   </body>
 </html>

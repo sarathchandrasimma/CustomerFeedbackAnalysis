@@ -1,40 +1,58 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home | Customer Feedback Analysis Tool</title>
-    <link href="{% static 'css/tailwind.css' %}" rel="stylesheet" />
+    <link href="/static/css/tailwind.css" rel="stylesheet" />
+    <style>
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .button-hover:hover {
+        background-color: #5a67d8;
+        transform: scale(1.05);
+      }
+    </style>
   </head>
   <body class="bg-gray-100">
-    <nav class="bg-blue-500 p-4">
+    <nav class="gradient-bg p-4 shadow-lg">
       <div class="container mx-auto flex justify-between items-center">
-        <a href="{% url 'home' %}" class="text-white text-2xl font-bold"
-          >Home</a
-        >
+        <a href="/" class="text-white text-2xl font-bold">Home</a>
         <div>
-          <a href="{% url 'about' %}" class="text-white px-4">About</a>
-          <a href="{% url 'contact' %}" class="text-white px-4">Contact</a>
-          <a href="{% url 'index' %}" class="text-white px-4"
+          <a href="/about/" class="text-white px-4 hover:text-gray-300"
+            >About</a
+          >
+          <a href="/contact/" class="text-white px-4 hover:text-gray-300"
+            >Contact</a
+          >
+          <a href="/feedback/" class="text-white px-4 hover:text-gray-300"
             >Feedback Analysis</a
           >
         </div>
       </div>
     </nav>
 
-    <div class="container mx-auto p-4">
-      <h1 class="text-4xl font-bold text-center mb-8">
+    <div class="container mx-auto p-8">
+      <h1 class="text-5xl font-extrabold text-center mb-8 text-gray-800">
         Welcome to the Customer Feedback Analysis Tool
       </h1>
-      <p class="text-xl text-center mb-4">
+      <p class="text-xl text-center mb-4 text-gray-600">
         Our tool helps retailers understand customer feedback and improve their
         products and services effectively.
       </p>
-      <p class="text-lg text-center">
+      <p class="text-lg text-center text-gray-600">
         Navigate through the About and Contact tabs to learn more and get in
         touch with us.
       </p>
+      <div class="text-center mt-8">
+        <a
+          href="/feedback/"
+          class="bg-blue-500 text-white px-6 py-3 rounded-full text-lg font-semibold button-hover transition-transform duration-200"
+        >
+          Analyze Feedback
+        </a>
+      </div>
     </div>
   </body>
 </html>
